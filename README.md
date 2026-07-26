@@ -16,7 +16,7 @@
 
 ![Page 4](assets/img/page-04.png)
 
-👉 [한국어 전체 문서 열기](index.html)
+👉 [한국어 전체 문서 열기](https://pheanor-agent.github.io/agent-engineering-guide/)
 
 ---
 
@@ -30,7 +30,7 @@
 
 ![Page 4](assets/img/en-page-04.png)
 
-👉 [English Full Document](index-en.html)
+👉 [English Full Document](https://pheanor-agent.github.io/agent-engineering-guide/index-en.html)
 
 ---
 
