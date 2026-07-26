@@ -1,0 +1,443 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta name="description" content="From harness engineering to loop engineering and graph engineering">
+  <title>The Next Stage of Agent Engineering</title>
+  <style>
+
+:root {
+  --paper: #f9fbff;
+  --surface: #ffffff;
+  --ink: #071a45;
+  --muted: #536684;
+  --line: #c9d7eb;
+  --grid: rgba(18, 78, 172, 0.055);
+  --blue: #1764ef;
+  --blue-soft: #edf4ff;
+  --green: #069a61;
+  --green-soft: #eefaf5;
+  --coral: #f25349;
+  --coral-soft: #fff2f0;
+  --shadow: 0 24px 60px rgba(24, 67, 127, 0.08);
+}
+
+:root[data-theme="dark"] {
+  --paper: #07101f;
+  --surface: #0d1a2e;
+  --ink: #edf4ff;
+  --muted: #9eb0cb;
+  --line: #243856;
+  --grid: rgba(98, 155, 241, 0.06);
+  --blue: #66a3ff;
+  --blue-soft: #10294f;
+  --green: #47cf94;
+  --green-soft: #0e3329;
+  --coral: #ff776d;
+  --coral-soft: #3b2024;
+  --shadow: 0 24px 70px rgba(0, 0, 0, 0.24);
+}
+
+* { box-sizing: border-box; }
+html { scroll-behavior: smooth; scroll-padding-top: 96px; }
+body {
+  margin: 0;
+  background: var(--paper);
+  color: var(--ink);
+  font-family: system-ui, "Pretendard", "Noto Sans KR",
+    "Apple SD Gothic Neo", system-ui, sans-serif;
+  transition: background .25s ease, color .25s ease;
+}
+a { color: inherit; text-decoration: none; }
+button { font: inherit; }
+
+.site-header {
+  position: sticky; top: 0; z-index: 50;
+  height: 76px; display: grid; grid-template-columns: 1fr auto 1fr;
+  align-items: center; padding: 0 clamp(20px, 4vw, 68px);
+  border-bottom: 1px solid var(--line);
+  background: color-mix(in srgb, var(--paper) 90%, transparent);
+  backdrop-filter: blur(18px);
+}
+.brand { display: flex; align-items: center; gap: 12px; font-weight: 850; letter-spacing: -.03em; }
+.brand-mark { width: 17px; height: 17px; border: 2px solid var(--blue); position: relative; }
+.brand-mark::after { content:""; position:absolute; width:7px; height:7px; background:var(--blue); right:-5px; bottom:-5px; }
+.header-nav { display: flex; gap: 42px; font-size: 14px; font-weight: 680; color: var(--muted); }
+.header-nav a:hover { color: var(--blue); }
+.header-actions { justify-self: end; display: flex; align-items: center; gap: 10px; }
+.language-link,.icon-button {
+  height: 38px; min-width: 42px; display: grid; place-items: center;
+  border: 1px solid var(--line); border-radius: 10px; background: var(--surface);
+  color: var(--ink); font-weight: 750; cursor: pointer;
+}
+.language-link { padding: 0 13px; color: var(--blue); }
+
+.blueprint {
+  background-image:
+    linear-gradient(var(--grid) 1px, transparent 1px),
+    linear-gradient(90deg, var(--grid) 1px, transparent 1px);
+  background-size: 34px 34px;
+}
+.hero {
+  min-height: calc(100vh - 76px);
+  display: grid; grid-template-columns: minmax(340px, .72fr) minmax(690px, 1.55fr);
+  gap: clamp(40px, 5vw, 96px); align-items: center;
+  padding: clamp(64px, 8vw, 120px) clamp(24px, 5.5vw, 90px);
+  border-bottom: 1px solid var(--line);
+}
+.eyebrow {
+  margin: 0 0 20px; color: var(--blue); font: 700 12px/1.3 ui-monospace, monospace;
+  letter-spacing: .19em; text-transform: uppercase;
+}
+.hero h1 { max-width: 640px; margin: 0; font-size: clamp(50px, 5.6vw, 96px); line-height: .99; letter-spacing: -.065em; font-weight: 900; text-wrap: balance; }
+.hero-subtitle { max-width: 630px; margin: 32px 0 0; color: var(--muted); font-size: clamp(18px, 1.6vw, 25px); line-height: 1.58; font-weight: 570; }
+.read-meta { display:flex; align-items:center; gap:12px; margin-top:32px; color:var(--blue); font:700 11px/1 ui-monospace, monospace; letter-spacing:.12em; }
+.clock { font-size:18px; }
+
+.system-map { display: grid; grid-template-columns: repeat(3, 1fr); min-height: 520px; border:1px solid var(--line); background:color-mix(in srgb, var(--surface) 84%, transparent); box-shadow:var(--shadow); }
+.map-stage { position:relative; padding:28px 22px 20px; border-right:1px dashed var(--line); overflow:hidden; }
+.map-stage:last-child { border-right:0; }
+.stage-heading { display:flex; align-items:center; justify-content:space-between; margin-bottom:34px; }
+.stage-heading span { color:var(--muted); font:600 10px ui-monospace,monospace; }
+.stage-heading h2 { margin:0; font:800 20px ui-monospace,monospace; }
+.harness-stage .stage-heading h2,.harness-stage code { color:var(--blue); }
+.loop-stage .stage-heading h2,.loop-stage code { color:var(--green); }
+.graph-stage .stage-heading h2,.graph-stage code { color:var(--coral); }
+.map-stage>code { display:block; position:absolute; left:22px; right:22px; bottom:22px; font-size:10px; line-height:1.6; white-space:normal; }
+.model-core { display:grid; place-items:center; width:94px; height:94px; color:white; background:linear-gradient(145deg,var(--blue),#2b7cff); border-radius:14px; font:700 13px/1.4 ui-monospace,monospace; text-align:center; box-shadow:0 12px 30px color-mix(in srgb,var(--blue) 30%,transparent); }
+.harness-shell { position:relative; min-height:310px; padding:54px 18px 30px; border:2px solid var(--blue); border-radius:12px; display:flex; flex-direction:column; align-items:center; gap:18px; }
+.harness-shell::before { content:"OPERATING ENVIRONMENT"; position:absolute; top:14px; left:16px; color:var(--blue); font:600 9px ui-monospace,monospace; }
+.harness-shell ul { margin:0; padding:0; display:flex; gap:10px; list-style:none; color:var(--muted); font-size:10px; }
+.harness-shell li::before { content:"•"; margin-right:4px; color:var(--blue); }
+.input-lines { position:absolute; left:-17px; top:70px; display:grid; grid-template-columns:auto 18px; gap:38px 3px; color:var(--blue); font:600 7px ui-monospace,monospace; }
+.input-lines i { height:1px; background:var(--blue); align-self:center; }
+.loop-ring { width:256px; height:256px; margin:32px auto 0; border:4px solid var(--green); border-radius:50%; position:relative; display:grid; place-items:center; }
+.loop-ring::after { content:"➤"; color:var(--green); background:var(--surface); position:absolute; top:-16px; right:45px; transform:rotate(22deg); padding:2px; }
+.loop-ring .model-core { width:82px; height:82px; background:linear-gradient(145deg,var(--green),#20b97c); box-shadow:0 12px 30px color-mix(in srgb,var(--green) 28%,transparent); }
+.loop-node { position:absolute; width:34px; height:34px; display:grid; place-items:center; border:2px solid var(--green); border-radius:50%; background:var(--surface); color:var(--green); font:700 12px ui-monospace,monospace; }
+.loop-node small { position:absolute; font-size:7px; letter-spacing:.05em; }
+.node-one{top:-18px}.node-one small{top:38px}.node-two{right:-18px}.node-two small{right:38px}.node-three{bottom:-18px}.node-three small{bottom:38px}.node-four{left:-18px}.node-four small{left:38px}
+.graph-net { width:min(230px,100%); height:275px; margin:10px auto; position:relative; }
+.graph-node { position:absolute; width:70px; height:70px; display:grid; place-items:center; border:2px solid var(--coral); border-radius:50%; background:var(--surface); color:var(--coral); font:700 10px ui-monospace,monospace; z-index:2; }
+.graph-top{top:0;left:calc(50% - 35px)}.graph-left{top:95px;left:0}.graph-right{top:95px;right:0}.graph-bottom{bottom:0;left:calc(50% - 35px)}
+.edge { position:absolute; width:112px; height:2px; background:var(--coral); transform-origin:left center; left:64px; top:112px; opacity:.8; }
+.edge-a{transform:rotate(-48deg)}.edge-b{left:143px;top:34px;transform:rotate(48deg)}.edge-c{left:60px;top:170px;transform:rotate(48deg)}.edge-d{left:142px;top:246px;transform:rotate(-48deg)}
+
+.summary-strip { display:grid; grid-template-columns:auto 1fr; gap:30px; max-width:1220px; margin:72px auto; padding:34px 40px; border:1px solid var(--line); border-radius:18px; background:var(--surface); box-shadow:var(--shadow); }
+.summary-number { display:grid; place-items:center; width:54px; height:54px; border-radius:14px; background:var(--blue-soft); color:var(--blue); font:750 14px ui-monospace,monospace; }
+.summary-strip .eyebrow{margin:2px 0 10px}.summary-text{margin:0;font-size:clamp(18px,2vw,27px);line-height:1.55;font-weight:720;letter-spacing:-.025em}
+
+.reading-layout { display:grid; grid-template-columns:260px minmax(0,800px); gap:80px; max-width:1220px; margin:0 auto; padding:40px 30px 130px; }
+.toc { position:sticky; top:112px; align-self:start; max-height:calc(100vh - 140px); overflow:auto; padding-right:18px; scrollbar-width:thin; }
+.toc .eyebrow{margin-bottom:22px}.toc ol{list-style:none;margin:0;padding:0;border-left:1px solid var(--line)}
+.toc li a{display:grid;grid-template-columns:32px 1fr;gap:10px;padding:8px 0 8px 15px;color:var(--muted);font-size:12px;line-height:1.35}
+.toc li a:hover{color:var(--blue)}.toc li span{font:650 10px ui-monospace,monospace;color:var(--blue)}
+.report-section { margin-bottom:120px; }
+.section-kicker { display:flex; gap:12px; color:var(--blue); font:700 11px ui-monospace,monospace; letter-spacing:.12em; }
+.section-kicker span:first-child{display:grid;place-items:center;width:34px;height:34px;border-radius:50%;background:var(--blue);color:white;letter-spacing:0}
+.section-kicker span:last-child{align-self:center}
+.report-section>h2{margin:24px 0 18px;font-size:clamp(33px,4.2vw,55px);line-height:1.14;letter-spacing:-.05em;text-wrap:balance}
+.section-lead{margin:0 0 45px;padding-left:22px;border-left:3px solid var(--blue);color:var(--muted);font-size:21px;line-height:1.7;font-weight:580}
+.prose{font-size:17px;line-height:1.92;color:color-mix(in srgb,var(--ink) 88%,var(--muted))}
+.prose p{margin:0 0 24px}.prose h3{margin:58px 0 18px;font-size:25px;line-height:1.38;letter-spacing:-.025em;color:var(--ink)}
+.prose ul,.prose ol{margin:20px 0 30px;padding-left:25px}.prose li{margin:8px 0;padding-left:4px}
+.prose strong{color:var(--ink)}.prose code{font-family:ui-monospace,monospace}
+.prose pre{margin:30px 0;padding:24px 28px;border:1px solid var(--line);border-radius:14px;background:var(--blue-soft);color:var(--blue);font-size:13px;line-height:1.7;overflow:auto}
+.prose blockquote{margin:42px 0;padding:30px 34px;border:0;border-left:4px solid var(--blue);background:var(--surface);box-shadow:var(--shadow);font-size:22px;line-height:1.6;font-weight:750;letter-spacing:-.025em}
+.concept-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin:34px 0}
+.concept-card{padding:20px;border:1px solid;border-radius:14px}.concept-card span{font:700 9px ui-monospace,monospace;letter-spacing:.12em}.concept-card h3{font-size:17px;margin:12px 0!important}.concept-card p{font-size:13px;line-height:1.65;margin:0}
+.concept-card.blue{border-color:var(--blue);background:var(--blue-soft)}.concept-card.blue span{color:var(--blue)}
+.concept-card.green{border-color:var(--green);background:var(--green-soft)}.concept-card.green span{color:var(--green)}
+.concept-card.coral{border-color:var(--coral);background:var(--coral-soft)}.concept-card.coral span{color:var(--coral)}
+.maturity-line{display:grid;grid-template-columns:repeat(5,1fr);margin:32px 0 46px;border:1px solid var(--line);border-radius:14px;overflow:hidden}
+.maturity-line span{position:relative;padding:19px 10px;text-align:center;border-right:1px solid var(--line);font:700 12px/1.5 ui-monospace,monospace;background:var(--surface)}
+.maturity-line span:last-child{border:0}.maturity-line b{display:block;color:var(--blue);font-size:10px}.maturity-line small{color:var(--muted);font-size:9px}
+.prose table{width:100%;margin:34px 0 44px;border-collapse:separate;border-spacing:0;border:1px solid var(--line);border-radius:14px;overflow:hidden;font-size:14px;line-height:1.6}
+.prose th,.prose td{padding:15px 17px;text-align:left;vertical-align:top;border-right:1px solid var(--line);border-bottom:1px solid var(--line)}
+.prose th:last-child,.prose td:last-child{border-right:0}.prose tr:last-child td{border-bottom:0}.prose th{background:var(--blue-soft);color:var(--blue);font:700 11px/1.4 ui-monospace,monospace;letter-spacing:.04em}.prose td:first-child{font-weight:730;color:var(--ink)}
+.compare-grid,.profile-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:14px;margin:32px 0 42px}
+.compare-grid>div,.profile-grid>div{padding:25px;border:1px solid var(--line);border-radius:15px;background:var(--surface)}
+.compare-grid>div:first-child{border-top:3px solid var(--green)}.compare-grid>div:last-child{border-top:3px solid var(--coral)}
+.compare-grid span{font:700 10px ui-monospace,monospace;letter-spacing:.12em;color:var(--blue)}.compare-grid h3{margin:12px 0!important;font-size:20px}.compare-grid p{font-size:14px;line-height:1.7}.compare-grid code{display:block;padding-top:13px;border-top:1px solid var(--line);color:var(--muted);font-size:11px}
+.profile-grid b{display:block;margin-bottom:13px;color:var(--blue);font:750 12px ui-monospace,monospace;letter-spacing:.08em}.profile-grid ul{margin:0;padding-left:20px;font-size:14px}
+.matrix{display:grid;grid-template-columns:135px repeat(2,1fr);margin:32px 0 44px;border:1px solid var(--line);border-radius:14px;overflow:hidden;font-size:13px}
+.matrix>*{padding:16px;border-right:1px solid var(--line);border-bottom:1px solid var(--line)}.matrix>*:nth-child(3n){border-right:0}.matrix>*:nth-last-child(-n+3){border-bottom:0}.matrix>b{background:var(--blue-soft);color:var(--blue);font:700 11px ui-monospace,monospace}.matrix span{background:var(--surface)}.matrix em{display:block;margin-top:8px;color:var(--muted);font-size:11px}
+.agent-table{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin:34px 0}.agent-table>div{padding:22px;border:1px solid var(--line);border-radius:14px;background:var(--surface)}.agent-table b{display:block;font-size:19px}.agent-table span{display:block;margin:6px 0 13px;color:var(--blue);font:650 10px ui-monospace,monospace;letter-spacing:.08em}.agent-table p{margin:0;font-size:13px;line-height:1.6}
+.decision-stack{margin:35px 0;border-left:2px solid var(--line)}.decision-stack>div{position:relative;margin:0 0 13px 24px;padding:22px 25px;border:1px solid var(--line);border-radius:14px;background:var(--surface)}.decision-stack>div::before{content:"";position:absolute;left:-31px;top:28px;width:12px;height:12px;border:3px solid var(--blue);border-radius:50%;background:var(--paper)}.decision-stack b{font-size:18px}.decision-stack p{margin:8px 0!important;font-size:14px}.decision-stack code{color:var(--blue);font-size:11px}
+.principle-list{display:grid;gap:12px;margin:32px 0}.principle-list>div{display:grid;grid-template-columns:46px 1fr;column-gap:16px;padding:22px 25px;border:1px solid var(--line);border-radius:14px;background:var(--surface)}.principle-list>div>b{grid-row:1/3;display:grid;place-items:center;align-self:start;width:42px;height:42px;border-radius:11px;background:var(--blue-soft);color:var(--blue);font:700 11px ui-monospace,monospace}.principle-list h3{margin:0 0 8px!important;font-size:19px}.principle-list p,.principle-list pre{grid-column:2;margin:0!important;font-size:14px}.principle-list pre{padding:14px 17px;margin-top:6px!important}
+.risk-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:12px;margin:34px 0}.risk-grid>div{padding:22px;border:1px solid var(--line);border-left:3px solid var(--coral);border-radius:12px;background:var(--surface)}.risk-grid b{font-size:17px}.risk-grid p{margin:9px 0 0!important;font-size:13px;line-height:1.7}
+.roadmap{position:relative;display:grid;gap:13px;margin:38px 0}.roadmap::before{content:"";position:absolute;left:24px;top:20px;bottom:20px;width:2px;background:linear-gradient(var(--blue),var(--green),var(--coral))}.roadmap>div{position:relative;display:grid;grid-template-columns:52px 1fr;column-gap:18px;padding:18px 20px;border:1px solid var(--line);border-radius:14px;background:var(--surface)}.roadmap span{z-index:1;display:grid;place-items:center;width:38px;height:38px;border:2px solid var(--blue);border-radius:50%;background:var(--surface);color:var(--blue);font:700 12px ui-monospace,monospace}.roadmap h3{margin:0 0 4px!important;font-size:18px}.roadmap p{grid-column:2;margin:0!important;font-size:13px;line-height:1.65}
+
+footer{display:flex;justify-content:space-between;gap:20px;padding:30px clamp(24px,5vw,70px);border-top:1px solid var(--line);color:var(--muted);font:600 11px ui-monospace,monospace}
+footer a{color:var(--blue)}
+
+@media (max-width: 1150px){
+  .hero{grid-template-columns:1fr;padding-top:80px}.hero-copy{max-width:760px}.system-map{min-height:480px}
+  .reading-layout{grid-template-columns:210px minmax(0,1fr);gap:45px}
+}
+@media (max-width: 760px){
+  .site-header{height:64px;grid-template-columns:1fr auto;padding:0 16px}.brand{font-size:13px}.header-nav{display:none}
+  .hero{min-height:auto;padding:62px 18px 40px;gap:50px}.hero h1{font-size:clamp(45px,15vw,68px)}.hero-subtitle{font-size:18px}
+  .system-map{grid-template-columns:1fr;min-height:0}.map-stage{min-height:390px;border-right:0;border-bottom:1px dashed var(--line);padding:24px 28px}.map-stage:last-child{border-bottom:0}
+  .harness-shell{max-width:280px;margin:auto}.loop-ring{width:230px;height:230px}.graph-net{width:260px}
+  .summary-strip{margin:42px 16px;padding:25px 22px;grid-template-columns:1fr}.summary-number{width:42px;height:42px}.summary-text{font-size:19px}
+  .reading-layout{display:block;padding:20px 19px 90px}.toc{position:static;max-height:none;margin-bottom:70px;padding:0}.toc ol{display:grid;grid-template-columns:repeat(2,1fr);gap:4px;border:0}.toc li a{padding:9px;border-bottom:1px solid var(--line)}
+  .report-section{margin-bottom:85px}.report-section>h2{font-size:36px}.section-lead{font-size:18px}.prose{font-size:16px;line-height:1.85}.prose h3{font-size:22px;margin-top:44px}.prose blockquote{font-size:19px;padding:24px}
+  .concept-grid{grid-template-columns:1fr}.maturity-line{grid-template-columns:1fr}.maturity-line span{border-right:0;border-bottom:1px solid var(--line);text-align:left;padding-left:22px}
+  .prose table{display:block;overflow-x:auto;white-space:normal}.prose th,.prose td{min-width:150px;padding:13px}
+  .compare-grid,.profile-grid,.agent-table,.risk-grid{grid-template-columns:1fr}.matrix{grid-template-columns:95px repeat(2,minmax(155px,1fr));overflow-x:auto}.matrix>*{min-width:0;padding:12px}.principle-list>div{grid-template-columns:40px 1fr;padding:18px}.principle-list p,.principle-list pre{grid-column:1/-1;margin-top:12px!important}.roadmap>div{padding-right:13px}
+  footer{flex-direction:column}
+}
+@media (max-width: 390px){.brand-mark{display:none}.brand{font-size:12px}.language-link,.icon-button{min-width:38px;height:36px}.toc ol{grid-template-columns:1fr}}
+@media (prefers-reduced-motion: reduce){html{scroll-behavior:auto}*{transition:none!important}}
+</style>
+</head>
+<body>
+<main>
+  <header class="site-header"><a class="brand" href="#top"><span class="brand-mark"></span>AGENT ENGINEERING</a><nav class="header-nav" aria-label="Primary sections"><a href="#concepts">Concepts</a><a href="#comparison">Comparison</a><a href="#roadmap">Roadmap</a></nav><div class="header-actions"><a class="language-link" href="index.html">KO</a><button class="icon-button" id="theme-toggle" type="button" aria-label="Toggle light and dark appearance">◐</button></div></header>
+  <div id="top" class="hero blueprint"><section class="hero-copy"><p class="eyebrow">AGENT SYSTEMS FIELD GUIDE · 2026</p><h1>The Next Stage of Agent Engineering</h1><p class="hero-subtitle">From harness engineering to loop engineering and graph engineering</p><div class="read-meta"><span class="clock">◷</span><span>24 min read</span><span>·</span><span>ENGLISH EDITION</span></div></section><section class="system-map" aria-label="Relationship between harness, loop, and graph engineering">
+    <article class="map-stage harness-stage"><div class="stage-heading"><span>01</span><h2>HARNESS</h2></div><div class="harness-shell"><div class="input-lines"><span>CONTEXT</span><i></i><span>TOOLS</span><i></i><span>RULES</span><i></i></div><div class="model-core">MODEL<br>CORE</div><ul><li>constraints</li><li>tools</li><li>observability</li></ul></div><code>environment = constraints + tools + feedback</code></article>
+    <article class="map-stage loop-stage"><div class="stage-heading"><span>02</span><h2>LOOP</h2></div><div class="loop-ring"><span class="loop-node node-one">1<small>PLAN</small></span><span class="loop-node node-two">2<small>ACT</small></span><span class="loop-node node-three">3<small>VERIFY</small></span><span class="loop-node node-four">4<small>REFLECT</small></span><div class="model-core">MODEL<br>CORE</div></div><code>while (!done) plan → act → verify</code></article>
+    <article class="map-stage graph-stage"><div class="stage-heading"><span>03</span><h2>GRAPH</h2></div><div class="graph-net"><span class="graph-node graph-top">LOOP</span><span class="graph-node graph-left">AGENT</span><span class="graph-node graph-right">CODE</span><span class="graph-node graph-bottom">HUMAN</span><i class="edge edge-a"></i><i class="edge edge-b"></i><i class="edge edge-c"></i><i class="edge edge-d"></i></div><code>nodes + edges + state + policy</code></article>
+  </section></div>
+  <section class="summary-strip"><span class="summary-number">00</span><div><p class="eyebrow">EXECUTIVE SUMMARY</p><p class="summary-text">Models act inside a harness, loops repeat that action over time, and graphs structure the relationships among loops, people, and deterministic code. Autonomy is constrained more directly by verifiability than by model intelligence.</p></div></section>
+  <div class="reading-layout"><aside class="toc"><p class="eyebrow">CONTENTS 01—16</p><ol><li><a href="#concepts"><span>01</span>Three boundaries</a></li><li><a href="#evolution"><span>02</span>Evolution</a></li><li><a href="#speakers"><span>03</span>Key perspectives</a></li><li><a href="#loops"><span>04</span>Inner & outer loops</a></li><li><a href="#model-fit"><span>05</span>Model × harness</a></li><li><a href="#codex"><span>06</span>Codex</a></li><li><a href="#claude-code"><span>07</span>Claude Code</a></li><li><a href="#hermes"><span>08</span>Hermes</a></li><li><a href="#comparison"><span>09</span>Fit before tools</a></li><li><a href="#choice"><span>10</span>Choose structure</a></li><li><a href="#users"><span>11</span>Guidance by user</a></li><li><a href="#principles"><span>12</span>Design principles</a></li><li><a href="#antipatterns"><span>13</span>Anti-patterns</a></li><li><a href="#roadmap"><span>14</span>Maturity roadmap</a></li><li><a href="#direction"><span>15</span>Outlook</a></li><li><a href="#conclusion"><span>16</span>Conclusion</a></li></ol></aside><article class="report"><section id="concepts" class="report-section">
+        <div class="section-kicker"><span>01</span><span>FOUNDATION</span></div>
+        <h2>1. Harness, loop, and graph engineering</h2>
+        <p class="section-lead">These are not competing buzzwords. They identify distinct layers of an agent system.</p>
+        <div class="prose">
+        <p>Agent engineering has moved beyond prompt and context engineering toward three related ideas: <strong>harness engineering</strong>, <strong>loop engineering</strong>, and <strong>graph engineering</strong>. The harness defines the world in which an agent works. The loop defines how work continues over time. The graph defines relationships among execution units and states.</p>
+        <div class="concept-grid">
+          <div class="concept-card blue"><span>ENVIRONMENT</span><h3>Harness engineering</h3><p>Design context, tools, permissions, memory, sandboxes, verification, and observability so a model can work reliably.</p></div>
+          <div class="concept-card green"><span>TIME</span><h3>Loop engineering</h3><p>Repeat execution against a goal, evidence, and stopping conditions instead of relying on a human to type every next prompt.</p></div>
+          <div class="concept-card coral"><span>RELATIONSHIP</span><h3>Graph engineering</h3><p>Coordinate agents, loops, deterministic procedures, and human approvals through explicit nodes, paths, and shared state.</p></div>
+        </div>
+        <blockquote>A model acts inside a harness; a loop repeats that action; a graph structures relationships among those repetitions.</blockquote>
+        <h3>1.1 Harness engineering designs the model's world</h3>
+        <p>A harness is more than a prompt wrapper. It includes files, terminals, search, browsers, external APIs, approvals, context compression, recovery, testing, and cost limits—the full interface between a model and the world.</p>
+        <pre><code>model intelligence × harness quality × task verifiability
+= dependable agent performance</code></pre>
+        <h3>1.2 Loop engineering designs time and repetition</h3>
+        <p>A loop starts from a trigger, reads state, selects the next task, executes an agent, verifies the result, records state, and chooses success, wait, retry, or escalation.</p>
+        <ol><li><strong>Trigger</strong> — when to start</li><li><strong>Goal</strong> — what must be achieved</li><li><strong>Verification</strong> — how achievement is proven</li><li><strong>Stop</strong> — when success, failure, blockage, or budget ends the run</li><li><strong>External state</strong> — how the next run knows previous progress</li></ol>
+        <h3>1.3 Graph engineering designs relationships and responsibility</h3>
+        <p>Graphs matter when order must be guaranteed, parallel work must join, or actors with different permissions and verification methods must be separated. Not every node should use an LLM: code should handle deterministic checks while models handle ambiguity and novel strategy.</p>
+      </div>
+      </section><section id="evolution" class="report-section">
+        <div class="section-kicker"><span>02</span><span>EVOLUTION</span></div>
+        <h2>2. From prompts to context, harnesses, loops, and graphs</h2>
+        <p class="section-lead">Higher abstractions do not remove prompts; they move prompts inside a larger execution system.</p>
+        <div class="prose">
+        <div class="maturity-line">
+          <span><b>01</b>Prompt<br><small>good instruction</small></span>
+          <span><b>02</b>Context<br><small>good information</small></span>
+          <span><b>03</b>Harness<br><small>good environment</small></span>
+          <span><b>04</b>Loop<br><small>continued action</small></span>
+          <span><b>05</b>Graph<br><small>coordinated duty</small></span>
+        </div>
+        <h3>2.1 Prompt engineering aligns one inference</h3>
+        <p>Early practice focused on roles, examples, output formats, and reasoning instructions. These remain useful, but failures in agents that edit files and use tools for hours cannot be explained by prompts alone.</p>
+        <h3>2.2 Context engineering shows the right information now</h3>
+        <p>Instead of stuffing every rule into one giant file, use a short map, structured documentation, searchable history, and executable plans. Context is a core part of the harness, not the whole of it.</p>
+        <h3>2.3 Harness engineering builds the conditions for success</h3>
+        <p>OpenAI's Codex-based product experiment showed engineering work moving from directly writing code toward building agent-readable repositories, verifiable requirements, structural tests, and custom linters.</p>
+        <blockquote>Do not merely ask the model to try harder. Build an environment in which it can succeed.</blockquote>
+        <h3>2.4 Loop engineering removes the repetitive “next”</h3>
+        <p>As coding agents became capable of longer work, people repeatedly typing “continue,” “test it,” and “check again” became the bottleneck. A loop combines goals, evidence, budgets, stopping conditions, and external state.</p>
+        <h3>2.5 Graph engineering makes production responsibility explicit</h3>
+        <p>Once exploration reveals stable procedures and boundaries, order, parallelism, approval, and recovery can be promoted into a graph. A graph is not a cage for creativity; it is the safety boundary that permits creative judgment.</p>
+      </div>
+      </section><section id="speakers" class="report-section">
+        <div class="section-kicker"><span>03</span><span>SURVEY</span></div>
+        <h2>3. One map for a fragmented conversation</h2>
+        <p class="section-lead">Different speakers use different labels, but all bring environment, repetition, and external state into the engineering problem.</p>
+        <div class="prose">
+        <p>Harness, loop, and graph engineering were not defined together in one standard. They converged as practitioners named bottlenecks observed in different environments. The useful question is not who coined a phrase first, but which failure each perspective is trying to remove.</p>
+        <table><thead><tr><th>Perspective</th><th>Emphasis</th><th>Practical meaning</th></tr></thead><tbody>
+          <tr><td>OpenAI / Codex</td><td>Agent legibility, repository knowledge, structural tests</td><td>Engineers increasingly design the conditions in which agents succeed</td></tr>
+          <tr><td>Anthropic</td><td>Long-running work, file-based state, context management</td><td>External checkpoints make long tasks recoverable across sessions</td></tr>
+          <tr><td>Addy Osmani</td><td>Automation, worktrees, skills, plugins, subagents</td><td>Move repetitive next actions into small operational loops</td></tr>
+          <tr><td>Lilian Weng</td><td>Planning, memory, tool use, failure modes</td><td>External state and feedback matter beyond conversational memory</td></tr>
+          <tr><td>LangChain / LangGraph</td><td>Explicit state, nodes, edges, persistence, observation</td><td>Represent branching, joins, recovery, and human approval as executable workflow</td></tr>
+          <tr><td>Microsoft</td><td>Smallest sufficient structure, deterministic procedure</td><td>Do not use an agent for a function or a workflow for a single-agent task</td></tr>
+        </tbody></table>
+        <h3>3.1 The common shift</h3><p>The focus moves beyond answer quality to the information a model sees, tools it can use, state it can return to, evidence that proves completion, and boundaries where people intervene.</p>
+        <h3>3.2 Questions that matter more than terminology</h3><ul><li>Did the model, tool, context, permission, or verifier cause the failure?</li><li>Should a repeated failure be fixed with prompting, environment design, or deterministic code?</li><li>Does a loop or graph separate real responsibility, or only multiply role names?</li></ul>
+      </div>
+      </section><section id="loops" class="report-section">
+        <div class="section-kicker"><span>04</span><span>MECHANISM</span></div>
+        <h2>4. The agent's inner loop and the system's outer loop</h2>
+        <p class="section-lead">Plan–act–observe within one session is different from a system deciding when and how to start another session.</p>
+        <div class="prose">
+        <div class="compare-grid">
+          <div><span>INNER LOOP</span><h3>Inside the agent runtime</h3><p>The model selects tools, observes results, and decides what to do next. It is bounded by context, tool errors, compaction, and its own completion judgment.</p><code>think → act → observe → revise</code></div>
+          <div><span>OUTER LOOP</span><h3>Outside the runtime</h3><p>A controller reads goals, budgets, checkpoints, and verification results to rerun, wait, stop, or escalate.</p><code>trigger → run → verify → persist → decide</code></div>
+        </div>
+        <p>A strong model and inner loop improve one session. Work that waits on CI, resumes tomorrow, or crosses repositories and issue states needs an outer loop.</p>
+        <h3>4.1 Signals that an outer loop is justified</h3><ul><li>The agent stops too early after one response.</li><li>CI, review, or an external API returns a delayed signal.</li><li>A new run must know what an old session accomplished.</li><li>Recovery with a fresh context is safer than stretching one session forever.</li></ul>
+        <h3>4.2 What loops do not solve</h3><p>Repetition cannot make an ambiguous goal objectively correct. An endless “keep improving” loop merely automates an undefined target. Write a completion contract and create machine-checkable evidence first.</p>
+      </div>
+      </section><section id="model-fit" class="report-section">
+        <div class="section-kicker"><span>05</span><span>MODEL × RUNTIME</span></div>
+        <h2>5. Model intelligence and harness quality are not substitutes</h2>
+        <p class="section-lead">A stronger model can do more with a thin harness, but it does not automatically create permissions, recovery, or verification.</p>
+        <div class="prose">
+        <div class="matrix"><div></div><b>Weak harness</b><b>Strong harness</b><b>Strong model</b><span>Fast, but unstable permissions and verification<br><em>high potential, high variance</em></span><span>Complex goals with fewer rules<br><em>highest general productivity</em></span><b>Mid-tier model</b><span>Tool confusion and goal drift<br><em>small tasks only</em></span><span>Stable with fewer tools and mechanical checks<br><em>cost-efficient automation</em></span></div>
+        <p>As models improve, harnesses change rather than disappear. Compensatory prompt rules shrink while stable interfaces, permissions, external state, observation, and verification become more important.</p>
+        <h3>5.1 Why model-specific profiles matter</h3><p>Models differ in parallel tool calling, tendency to ask questions, tolerance for context compression, error recovery, and when they declare completion. One toolset and turn budget cannot be optimal for every model.</p>
+        <ul><li>Strong models: reduce forced process and let them own complex judgment.</li><li>Mid-tier and local models: narrow tools, shorten goals, strengthen external verification.</li><li>Expensive models: reserve them for architecture, hard failures, final review, and goal redesign.</li></ul>
+        <blockquote>Autonomy is constrained more directly by verifiability than by raw model intelligence.</blockquote>
+      </div>
+      </section><section id="codex" class="report-section">
+        <div class="section-kicker"><span>06</span><span>HARNESS PROFILE</span></div>
+        <h2>6. Codex: tight integration of model and harness</h2>
+        <p class="section-lead">Software tools, sandboxing, planning, and verification are combined into one coherent work experience.</p>
+        <div class="prose">
+        <p>Codex's advantage is not only the model. Repository exploration, file editing, command execution, approval, planning, and verification are integrated so an agent can investigate, modify, and test in one workspace.</p>
+        <div class="profile-grid"><div><b>Strengths</b><ul><li>Joint optimization of coding model and runtime</li><li>High task completion inside a workspace</li><li>Consistent sandbox, approval, and tool flow</li><li>Planning through build and verification</li></ul></div><div><b>Trade-offs</b><ul><li>Relatively coupled to the product's execution model</li><li>Persistent personal memory is not the primary design center</li><li>Long coordination across external systems needs another state layer</li></ul></div></div>
+        <p><strong>Best fit:</strong> repository-level features, bug fixes, refactors, build and test repair, review, and deployable software artifacts.</p>
+      </div>
+      </section><section id="claude-code" class="report-section">
+        <div class="section-kicker"><span>07</span><span>HARNESS PROFILE</span></div>
+        <h2>7. Claude Code: strong reasoning and terminal composability</h2>
+        <p class="section-lead">Its terminal-centered design makes it natural for users to combine hooks, commands, subagents, and external automation.</p>
+        <div class="prose">
+        <p>Claude Code stands out for long-context reasoning, terminal fluency, project instructions, and composable hooks. Users can combine shell tools, worktrees, CI, and issue trackers into their own loops.</p>
+        <div class="profile-grid"><div><b>Strengths</b><ul><li>Complex codebase and long-instruction understanding</li><li>Strong composition with Unix tools</li><li>Hooks and agent-team extensions</li><li>Freedom to design user-owned loops</li></ul></div><div><b>Trade-offs</b><ul><li>Human review can become the bottleneck</li><li>Teams multiply context and synthesis cost</li><li>Users must define permissions, state, and done criteria</li></ul></div></div>
+        <p><strong>Best fit:</strong> deep repository investigation, long coding tasks crossing design and implementation, terminal automation, and user-directed parallel work.</p>
+      </div>
+      </section><section id="hermes" class="report-section">
+        <div class="section-kicker"><span>08</span><span>HARNESS PROFILE</span></div>
+        <h2>8. Hermes: persistent, model-independent personal agency</h2>
+        <p class="section-lead">It resembles an open, long-running agent environment combining memory, skills, messaging, and automation more than a dedicated coding tool.</p>
+        <div class="prose">
+        <p>Hermes can combine different models, tools, skills, messaging channels, and persistent memory. It fits always-on personal or work agents, hybrid local/cloud portfolios, and scheduled or event-driven work.</p>
+        <div class="profile-grid"><div><b>Strengths</b><ul><li>Model independence and local/cloud mixing</li><li>Persistent memory, skills, and messaging</li><li>Profile-specific tools and models</li><li>Open automation and long-running operation</li></ul></div><div><b>Trade-offs</b><ul><li>More tools can reduce selection accuracy for weaker models</li><li>Memory and skills can duplicate or decay</li><li>Privacy and channel permissions need clear separation</li><li>Operators own configuration complexity and model variance</li></ul></div></div>
+        <p>Separate personal, work, coding, and shared-channel profiles. Use strong models for architecture and final review, and local models for search, organization, log analysis, and repetitive edits.</p>
+      </div>
+      </section><section id="comparison" class="report-section">
+        <div class="section-kicker"><span>09</span><span>FIT ANALYSIS</span></div>
+        <h2>9. Evaluate model–task fit before choosing a harness</h2>
+        <p class="section-lead">A single aggregate score hides the cause of failure. Evaluate model, harness, and task separately.</p>
+        <div class="prose">
+        <table><thead><tr><th>Axis</th><th>Capabilities to separate</th></tr></thead><tbody>
+          <tr><td>Model</td><td>Requirement interpretation · planning · code understanding · tool selection · diagnosis · long instruction retention · self-correction · completion judgment · uncertainty</td></tr>
+          <tr><td>Harness</td><td>Tool quality · sandbox · context · memory · recovery · parallelism · approvals · observability · cost control</td></tr>
+          <tr><td>Task</td><td>Verifiability · repetition · external access · failure cost · creativity · dependency count · required human approval</td></tr>
+        </tbody></table>
+        <p>An autonomous loop struggles with “create a great marketing strategy” even with the best model because success is subjective. A mid-tier model can automate lint repair, schema conversion, format normalization, API regression checks, and broken-link fixes because success is inspectable.</p>
+        <div class="agent-table"><div><b>Codex</b><span>Integrated execution</span><p>High software productivity through tight model–workspace integration</p></div><div><b>Claude Code</b><span>Reasoning & composition</span><p>User-owned loops and teams centered on the terminal</p></div><div><b>Hermes</b><span>Persistent operation</span><p>Model independence, memory, skills, messaging, and automation</p></div></div>
+      </div>
+      </section><section id="choice" class="report-section">
+        <div class="section-kicker"><span>10</span><span>DECISION MAP</span></div>
+        <h2>10. When to use a prompt, agent, loop, or graph</h2>
+        <p class="section-lead">Start with the smallest structure and promote only observed repetition and responsibility boundaries.</p>
+        <div class="prose">
+        <div class="decision-stack">
+          <div><b>Direct prompt</b><p>One-off question · exploration · unformed requirement · continuous taste judgment · small edit · undefined verification</p><code>“Review the three largest risks in this design.”</code></div>
+          <div><b>Single agent</b><p>One repository · one agent holds the context · a few tool calls · immediate human review</p><code>“Reproduce this bug, make the smallest fix, and run related tests.”</code></div>
+          <div><b>Loop</b><p>Repeated attempts · delayed signals · recurring next-task discovery · external state · objective done criteria</p><code>“Fix CI until it passes, but stop if a DB change is required.”</code></div>
+          <div><b>Graph</b><p>Guaranteed order · parallel joins · separated permissions · human approval · typed recovery · multiple systems · audit history</p><code>analysis → security → implementation ∥ tests → approval → gradual deploy → verify/rollback</code></div>
+        </div>
+      </div>
+      </section><section id="users" class="report-section">
+        <div class="section-kicker"><span>11</span><span>PRACTICE</span></div>
+        <h2>11. Practical direction for different users</h2>
+        <p class="section-lead">Most individuals get the best return from one strong agent, a verifiable repository, and a small loop.</p>
+        <div class="prose">
+        <h3>11.1 General coding-agent users</h3><p>Start with one strong agent. Keep project instructions short, provide test, lint, and build commands, require a plan before work and evidence after, and save only repeated procedures as skills. The highest leverage comes from a <strong>verifiable repository</strong>, not multiple agents.</p>
+        <h3>11.2 Power users and solo developers</h3><p>Add small loops for issue investigation, test repair, dependency updates, and documentation. End with a reviewable pull request rather than automatic merge.</p><pre><code>discover → change → test → independent review → PR → human approval</code></pre>
+        <h3>11.3 Teams and technical leaders</h3><p>Prioritize repository knowledge, executable requirements, fast deterministic tests, architecture linters, observable runs, isolated workspaces, and issue/PR orchestration. Protect scarce human review bandwidth as agent throughput rises.</p>
+        <h3>11.4 Local and open-model users</h3><p>Reduce tools per profile, use task-specific skills, small work units, file-based plans, short loops, and mechanical verification. Let local models search and edit; reserve strong cloud models for architecture, hard failures, and final review.</p>
+        <h3>11.5 Persistent personal-agent users</h3><p>Separate memory, tools, permissions, channels, skills, models, and retention for personal, work, coding, and shared-channel profiles. The key memory question is <strong>what not to store</strong>.</p>
+        <h3>11.6 Agent-platform developers</h3><pre><code>1. Agent Runtime — model, tools, context, permissions, session
+2. Loop Controller — goals, budget, verification, wait, retry
+3. Workflow Orchestrator — dependencies, parallelism, approval, recovery</code></pre><p>This layering preserves business state when models or harnesses change and allows small loops before graph adoption.</p>
+      </div>
+      </section><section id="principles" class="report-section">
+        <div class="section-kicker"><span>12</span><span>OPERATING RULES</span></div>
+        <h2>12. Principles for practical systems</h2>
+        <p class="section-lead">Good systems place completion contracts, evidence, state, and failure boundaries correctly.</p>
+        <div class="prose">
+        <div class="principle-list">
+          <div><b>01</b><h3>Start with the smallest structure</h3><p>Function → model call → single agent → loop → graph. Move upward only when the lower level is insufficient.</p></div>
+          <div><b>02</b><h3>Write a completion contract, not only a goal</h3><p>Specify result, verification, constraints, scope, and stop conditions.</p></div>
+          <div><b>03</b><h3>Separate author and verifier</h3><p>Prefer tests, type checks, and execution evidence over another model saying it looks good.</p></div>
+          <div><b>04</b><h3>Completion is a state transition</h3><pre><code>IMPLEMENTED --test evidence--> VERIFIED
+VERIFIED --human approval--> READY_TO_MERGE</code></pre></div>
+          <div><b>05</b><h3>Keep state outside conversation</h3><p>Use Git plans, JSON state, issues, checkpoint databases, test reports, and structured logs.</p></div>
+          <div><b>06</b><h3>Separate failure boundaries, not personas</h3><p>Split work when permissions, context, model cost, impact, verification, or workspace lifetime differ.</p></div>
+          <div><b>07</b><h3>Mix deterministic code and model judgment</h3><p>Code handles schemas and permissions; models handle ambiguity; people approve high-risk transitions.</p></div>
+          <div><b>08</b><h3>Every loop needs a budget</h3><p>Limit turns, time, tokens, cost, concurrency, retries, and changed files. Exhaustion is a normal terminal state.</p></div>
+          <div><b>09</b><h3>Simplify again after model upgrades</h3><p>Remove obsolete forced planning, prompt tricks, unnecessary subagents, and old tool descriptions.</p></div>
+        </div>
+      </div>
+      </section><section id="antipatterns" class="report-section">
+        <div class="section-kicker"><span>13</span><span>FAILURE MODES</span></div>
+        <h2>13. Common anti-patterns</h2>
+        <p class="section-lead">Adding complexity is easy. Proving that it removes a real failure is the hard part.</p>
+        <div class="prose">
+        <div class="risk-grid">
+          <div><b>Giant instruction file</b><p>Wastes context and accumulates stale, conflicting rules. Use a short map and structured detail.</p></div>
+          <div><b>Unverified infinite loop</b><p><code>while true: agent("keep improving")</code> has no done condition and keeps spending.</p></div>
+          <div><b>Self-review only</b><p>Useful, but not a substitute for independent tests and external evidence.</p></div>
+          <div><b>Multi-agent everything</b><p>Without real permission, tool, or verifier differences, it multiplies context and synthesis cost.</p></div>
+          <div><b>Freezing a graph too early</b><p>Explore first, observe repetition, then promote only stable boundaries.</p></div>
+          <div><b>One harness for every model</b><p>Profiles should reflect differences in tool calling, questions, compression, and recovery.</p></div>
+          <div><b>Observation without improvement</b><p>Logs must answer where, why, how often, what changed, and whether cost improved quality.</p></div>
+        </div>
+      </div>
+      </section><section id="roadmap" class="report-section">
+        <div class="section-kicker"><span>14</span><span>MATURITY 0—6</span></div>
+        <h2>14. A recommended maturity roadmap</h2>
+        <p class="section-lead">You do not need every stage. Stages 2–3 deliver the best return for most individuals.</p>
+        <div class="prose">
+        <div class="roadmap">
+          <div><span>0</span><h3>Assistant</h3><p>People do the work; the model explains and drafts. Learn strengths and limits.</p></div>
+          <div><span>1</span><h3>Single agent</h3><p>Explore, edit, run commands; human reviews each run. Improve repository legibility.</p></div>
+          <div><span>2</span><h3>Managed harness</h3><p>Instructions, docs, sandbox, tests, permissions, observation. Stabilize repeated work.</p></div>
+          <div><span>3</span><h3>Verifiable loop</h3><p>Persistent goal, external state, budget, terminal states. Remove the repetitive “next.”</p></div>
+          <div><span>4</span><h3>Limited graph</h3><p>Clear nodes, deterministic branches, approval, recovery. Guarantee order and duty.</p></div>
+          <div><span>5</span><h3>Agent portfolio</h3><p>Task-specific models, profiles, parallel work, central state. Optimize cost, speed, quality.</p></div>
+          <div><span>6</span><h3>Learning system</h3><p>Cluster failures, propose improvements, regress, apply after approval. Accumulate experience.</p></div>
+        </div>
+      </div>
+      </section><section id="direction" class="report-section">
+        <div class="section-kicker"><span>15</span><span>OUTLOOK</span></div>
+        <h2>15. Harness as infrastructure, loop as automation, graph as boundary</h2>
+        <p class="section-lead">The best system is selectively autonomous, not universally autonomous.</p>
+        <div class="prose">
+        <h3>15.1 Harness engineering becomes basic infrastructure</h3><p>Files, data, permissions, tools, networks, memory, safety, verification, people, and organizations remain as models improve. Temporary compensation rules shrink; stable interfaces and operating boundaries matter more.</p>
+        <h3>15.2 Loop engineering becomes the unit of automation</h3><p>Users will create work contracts defining trigger, goal, evidence, scope, cost, and stopping conditions. Prompts become components inside loops.</p>
+        <h3>15.3 Graph engineering matters in production</h3><p>Graphs address audit state, separated responsibility and permissions, approvals, recovery, long runs, cost and concurrency, and multi-system integration.</p>
+        <h3>15.4 The selective-autonomy boundary</h3><pre><code>clear rule       → code decides
+ambiguous problem → model judges
+high-risk change  → human approves
+success           → evidence decides</code></pre>
+      </div>
+      </section><section id="conclusion" class="report-section">
+        <div class="section-kicker"><span>16</span><span>TAKEAWAY</span></div>
+        <h2>16. Better boundaries, not merely more agents</h2>
+        <p class="section-lead">As abstraction rises, human responsibility shifts from writing every result to designing a system that generates, verifies, and approves the right result.</p>
+        <div class="prose">
+        <p>The move from harness to loop to graph engineering is not a parade of new labels. It describes a shift from receiving good answers, to agents doing work, continuing work, coordinating with systems, and improving through experience.</p>
+        <p>Codex tightly integrates model and harness for high software productivity. Claude Code combines strong reasoning with terminal composability for user-designed loops and teams. Hermes combines model independence, persistent memory, skills, messaging, and automation for long-running open agency.</p>
+        <p>Instead of asking which agent is universally best, ask: Can this model understand the task? Does the harness create conditions for success? Is the goal verifiable? Is repetition necessary? Does a graph separate real responsibility? Can the system stop and recover safely?</p>
+        <blockquote>Start with one strong agent and a simple harness. Add a loop when repetition is proven. Expand into a graph only when responsibility, permission, and failure boundaries truly diverge.</blockquote>
+      </div>
+      </section></article></div>
+  <footer><p>Agent Engineering Field Guide · 2026</p><a href="#top">Back to top ↑</a></footer>
+</main>
+<script>
+  const root = document.documentElement;
+  const saved = localStorage.getItem("agent-guide-theme");
+  if (saved === "dark" || (!saved && matchMedia("(prefers-color-scheme: dark)").matches)) root.dataset.theme = "dark";
+  document.getElementById("theme-toggle").addEventListener("click", () => {
+    const next = root.dataset.theme === "dark" ? "light" : "dark";
+    root.dataset.theme = next;
+    localStorage.setItem("agent-guide-theme", next);
+  });
+</script>
+</body>
+</html>
