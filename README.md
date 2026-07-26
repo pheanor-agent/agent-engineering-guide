@@ -8,12 +8,13 @@
 
 ## 📖 한국어 버전
 
-| | |
-|---|---|
-| ![Page 1](assets/img/page-01.png) | ![Page 2](assets/img/page-02.png) |
-| ![Page 3](assets/img/page-03.png) | ![Page 4](assets/img/page-04.png) |
-| ![Page 5](assets/img/page-05.png) | ![Page 6](assets/img/page-06.png) |
-| ![Page 7](assets/img/page-07.png) | ![Page 8](assets/img/page-08.png) |
+![Page 1](assets/img/page-01.png)
+
+![Page 2](assets/img/page-02.png)
+
+![Page 3](assets/img/page-03.png)
+
+![Page 4](assets/img/page-04.png)
 
 👉 [한국어 전체 문서 열기](index.html)
 
@@ -21,12 +22,13 @@
 
 ## 📖 English Version
 
-| | |
-|---|---|
-| ![Page 1](assets/img/en-page-01.png) | ![Page 2](assets/img/en-page-02.png) |
-| ![Page 3](assets/img/en-page-03.png) | ![Page 4](assets/img/en-page-04.png) |
-| ![Page 5](assets/img/en-page-05.png) | ![Page 6](assets/img/en-page-06.png) |
-| ![Page 7](assets/img/en-page-07.png) | ![Page 8](assets/img/en-page-08.png) |
+![Page 1](assets/img/en-page-01.png)
+
+![Page 2](assets/img/en-page-02.png)
+
+![Page 3](assets/img/en-page-03.png)
+
+![Page 4](assets/img/en-page-04.png)
 
 👉 [English Full Document](index-en.html)
 
