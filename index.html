@@ -49,6 +49,19 @@ body {
     "Apple SD Gothic Neo", system-ui, sans-serif;
   transition: background .25s ease, color .25s ease;
 }
+main {
+  word-break: normal;
+  overflow-wrap: break-word;
+  hyphens: none;
+}
+main:lang(ko) {
+  word-break: keep-all;
+  line-break: strict;
+}
+code, pre, .read-meta, .stage-heading {
+  word-break: normal;
+  overflow-wrap: anywhere;
+}
 a { color: inherit; text-decoration: none; }
 button { font: inherit; }
 
@@ -123,6 +136,14 @@ button { font: inherit; }
 .graph-top{top:0;left:calc(50% - 35px)}.graph-left{top:95px;left:0}.graph-right{top:95px;right:0}.graph-bottom{bottom:0;left:calc(50% - 35px)}
 .edge { position:absolute; width:112px; height:2px; background:var(--coral); transform-origin:left center; left:64px; top:112px; opacity:.8; }
 .edge-a{transform:rotate(-48deg)}.edge-b{left:143px;top:34px;transform:rotate(48deg)}.edge-c{left:60px;top:170px;transform:rotate(48deg)}.edge-d{left:142px;top:246px;transform:rotate(-48deg)}
+.system-map{min-height:448px}
+.map-stage{display:flex;flex-direction:column;min-width:0;padding:28px 18px 20px}
+.stage-heading{margin-bottom:18px}
+.stage-visual{margin:0;display:flex;flex:1;min-height:0;flex-direction:column;gap:12px}
+.stage-visual img{display:block;width:100%;aspect-ratio:4/3;object-fit:contain;border:1px solid color-mix(in srgb,var(--line) 78%,transparent);border-radius:12px;background:#f8fbff}
+.stage-visual figcaption{min-height:36px;color:var(--muted);font:650 10px/1.55 ui-monospace,monospace}
+.map-stage>code{position:static;display:block;margin-top:auto;padding-top:17px;border-top:1px solid var(--line);font-size:9px;line-height:1.55;white-space:normal}
+:root[data-theme="dark"] .stage-visual img{filter:brightness(.82) saturate(.9);border-color:#355070}
 
 .summary-strip { display:grid; grid-template-columns:auto 1fr; gap:30px; max-width:1220px; margin:72px auto; padding:34px 40px; border:1px solid var(--line); border-radius:18px; background:var(--surface); box-shadow:var(--shadow); }
 .summary-number { display:grid; place-items:center; width:54px; height:54px; border-radius:14px; background:var(--blue-soft); color:var(--blue); font:750 14px ui-monospace,monospace; }
@@ -178,9 +199,9 @@ footer a{color:var(--blue)}
 }
 @media (max-width: 760px){
   .site-header{height:64px;grid-template-columns:1fr auto;padding:0 16px}.brand{font-size:13px}.header-nav{display:none}
-  .hero{min-height:auto;padding:62px 18px 40px;gap:50px}.hero h1{font-size:clamp(45px,15vw,68px)}.hero-subtitle{font-size:18px}
-  .system-map{grid-template-columns:1fr;min-height:0}.map-stage{min-height:390px;border-right:0;border-bottom:1px dashed var(--line);padding:24px 28px}.map-stage:last-child{border-bottom:0}
-  .harness-shell{max-width:280px;margin:auto}.loop-ring{width:230px;height:230px}.graph-net{width:260px}
+  .hero{min-height:auto;padding:62px 18px 40px;gap:50px}.hero h1{font-size:clamp(42px,12vw,60px)}.hero-subtitle{font-size:18px}
+  .system-map{grid-template-columns:1fr;min-height:0}.map-stage{min-height:0;border-right:0;border-bottom:1px dashed var(--line);padding:24px 24px 22px}.map-stage:last-child{border-bottom:0}
+  .stage-visual img{max-height:370px}.stage-visual figcaption{min-height:0;font-size:10px}.map-stage>code{margin-top:18px}
   .summary-strip{margin:42px 16px;padding:25px 22px;grid-template-columns:1fr}.summary-number{width:42px;height:42px}.summary-text{font-size:19px}
   .reading-layout{display:block;padding:20px 19px 90px}.toc{position:static;max-height:none;margin-bottom:70px;padding:0}.toc ol{display:grid;grid-template-columns:repeat(2,1fr);gap:4px;border:0}.toc li a{padding:9px;border-bottom:1px solid var(--line)}
   .report-section{margin-bottom:85px}.report-section>h2{font-size:36px}.section-lead{font-size:18px}.prose{font-size:16px;line-height:1.85}.prose h3{font-size:22px;margin-top:44px}.prose blockquote{font-size:19px;padding:24px}
@@ -189,17 +210,17 @@ footer a{color:var(--blue)}
   .compare-grid,.profile-grid,.agent-table,.risk-grid{grid-template-columns:1fr}.matrix{grid-template-columns:95px repeat(2,minmax(155px,1fr));overflow-x:auto}.matrix>*{min-width:0;padding:12px}.principle-list>div{grid-template-columns:40px 1fr;padding:18px}.principle-list p,.principle-list pre{grid-column:1/-1;margin-top:12px!important}.roadmap>div{padding-right:13px}
   footer{flex-direction:column}
 }
-@media (max-width: 390px){.brand-mark{display:none}.brand{font-size:12px}.language-link,.icon-button{min-width:38px;height:36px}.toc ol{grid-template-columns:1fr}}
+@media (max-width: 390px){.brand-mark{display:none}.brand{font-size:12px}.language-link,.icon-button{min-width:38px;height:36px}.toc ol{grid-template-columns:1fr}main:lang(ko) .report-section>h2{font-size:clamp(28px,8vw,34px)}}
 @media (prefers-reduced-motion: reduce){html{scroll-behavior:auto}*{transition:none!important}}
 </style>
 </head>
 <body>
-<main>
+<main lang="ko">
   <header class="site-header"><a class="brand" href="#top"><span class="brand-mark"></span>AGENT ENGINEERING</a><nav class="header-nav" aria-label="주요 섹션"><a href="#concepts">개념</a><a href="#comparison">비교</a><a href="#roadmap">로드맵</a></nav><div class="header-actions"><a class="language-link" href="index-en.html">EN</a><button class="icon-button" id="theme-toggle" type="button" aria-label="밝은 화면과 어두운 화면 전환">◐</button></div></header>
   <div id="top" class="hero blueprint"><section class="hero-copy"><p class="eyebrow">AGENT SYSTEMS FIELD GUIDE · 2026</p><h1>에이전트 엔지니어링의 다음 단계</h1><p class="hero-subtitle">하네스 엔지니어링에서 루프 엔지니어링, 그래프 엔지니어링으로</p><div class="read-meta"><span class="clock">◷</span><span>약 24분</span><span>·</span><span>KOREAN EDITION</span></div></section><section class="system-map" aria-label="하네스, 루프, 그래프 엔지니어링 관계도">
-    <article class="map-stage harness-stage"><div class="stage-heading"><span>01</span><h2>HARNESS</h2></div><div class="harness-shell"><div class="input-lines"><span>CONTEXT</span><i></i><span>TOOLS</span><i></i><span>RULES</span><i></i></div><div class="model-core">MODEL<br>CORE</div><ul><li>제약</li><li>도구</li><li>관측</li></ul></div><code>environment = constraints + tools + feedback</code></article>
-    <article class="map-stage loop-stage"><div class="stage-heading"><span>02</span><h2>LOOP</h2></div><div class="loop-ring"><span class="loop-node node-one">1<small>PLAN</small></span><span class="loop-node node-two">2<small>ACT</small></span><span class="loop-node node-three">3<small>VERIFY</small></span><span class="loop-node node-four">4<small>REFLECT</small></span><div class="model-core">MODEL<br>CORE</div></div><code>while (!done) plan → act → verify</code></article>
-    <article class="map-stage graph-stage"><div class="stage-heading"><span>03</span><h2>GRAPH</h2></div><div class="graph-net"><span class="graph-node graph-top">LOOP</span><span class="graph-node graph-left">AGENT</span><span class="graph-node graph-right">CODE</span><span class="graph-node graph-bottom">HUMAN</span><i class="edge edge-a"></i><i class="edge edge-b"></i><i class="edge edge-c"></i><i class="edge edge-d"></i></div><code>nodes + edges + state + policy</code></article>
+    <article class="map-stage harness-stage"><div class="stage-heading"><span>01</span><h2>HARNESS</h2></div><figure class="stage-visual"><img src="visuals/harness.webp" alt="모델 코어를 컨텍스트, 도구, 규칙, 메모리, 권한과 검증 환경이 둘러싼 하네스 구조" width="1200" height="900"><figcaption>환경 · 컨텍스트 · 도구 · 권한 · 검증</figcaption></figure><code>environment = constraints + tools + feedback</code></article>
+    <article class="map-stage loop-stage"><div class="stage-heading"><span>02</span><h2>LOOP</h2></div><figure class="stage-visual"><img src="visuals/loop.webp" alt="모델 코어 주위에서 계획, 행동, 검증과 반영이 반복되는 루프 구조" width="1200" height="900"><figcaption>목표 · 실행 · 증거 · 재시도 · 종료</figcaption></figure><code>while (!done) plan → act → verify</code></article>
+    <article class="map-stage graph-stage"><div class="stage-heading"><span>03</span><h2>GRAPH</h2></div><figure class="stage-visual"><img src="visuals/graph.webp" alt="에이전트, 반복 루프, 결정적 코드와 사람 승인이 공유 상태를 중심으로 연결된 그래프 구조" width="1200" height="900"><figcaption>분기 · 병렬 · 합류 · 승인 · 복구</figcaption></figure><code>nodes + edges + state + policy</code></article>
   </section></div>
   <section class="summary-strip"><span class="summary-number">00</span><div><p class="eyebrow">핵심 요약</p><p class="summary-text">모델은 하네스 안에서 행동하고, 루프는 그 행동을 반복하며, 그래프는 여러 루프와 사람·코드의 관계를 구조화한다. 자율성은 모델 지능보다 검증 가능성에 더 직접적으로 제한된다.</p></div></section>
   <div class="reading-layout"><aside class="toc"><p class="eyebrow">CONTENTS 01—16</p><ol><li><a href="#concepts"><span>01</span>세 개념의 경계</a></li><li><a href="#evolution"><span>02</span>발전 과정</a></li><li><a href="#speakers"><span>03</span>주요 관점</a></li><li><a href="#loops"><span>04</span>내부·외부 루프</a></li><li><a href="#model-fit"><span>05</span>모델×하네스</a></li><li><a href="#codex"><span>06</span>Codex</a></li><li><a href="#claude-code"><span>07</span>Claude Code</a></li><li><a href="#hermes"><span>08</span>Hermes</a></li><li><a href="#comparison"><span>09</span>선택 기준</a></li><li><a href="#choice"><span>10</span>구조 선택</a></li><li><a href="#users"><span>11</span>사용자별 방향</a></li><li><a href="#principles"><span>12</span>설계 원칙</a></li><li><a href="#antipatterns"><span>13</span>안티패턴</a></li><li><a href="#roadmap"><span>14</span>성숙도 로드맵</a></li><li><a href="#direction"><span>15</span>최종 방향성</a></li><li><a href="#conclusion"><span>16</span>결론</a></li></ol></aside><article class="report"><section id="concepts" class="report-section">

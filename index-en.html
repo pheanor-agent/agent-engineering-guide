@@ -49,6 +49,19 @@ body {
     "Apple SD Gothic Neo", system-ui, sans-serif;
   transition: background .25s ease, color .25s ease;
 }
+main {
+  word-break: normal;
+  overflow-wrap: break-word;
+  hyphens: none;
+}
+main:lang(ko) {
+  word-break: keep-all;
+  line-break: strict;
+}
+code, pre, .read-meta, .stage-heading {
+  word-break: normal;
+  overflow-wrap: anywhere;
+}
 a { color: inherit; text-decoration: none; }
 button { font: inherit; }
 
@@ -123,6 +136,14 @@ button { font: inherit; }
 .graph-top{top:0;left:calc(50% - 35px)}.graph-left{top:95px;left:0}.graph-right{top:95px;right:0}.graph-bottom{bottom:0;left:calc(50% - 35px)}
 .edge { position:absolute; width:112px; height:2px; background:var(--coral); transform-origin:left center; left:64px; top:112px; opacity:.8; }
 .edge-a{transform:rotate(-48deg)}.edge-b{left:143px;top:34px;transform:rotate(48deg)}.edge-c{left:60px;top:170px;transform:rotate(48deg)}.edge-d{left:142px;top:246px;transform:rotate(-48deg)}
+.system-map{min-height:448px}
+.map-stage{display:flex;flex-direction:column;min-width:0;padding:28px 18px 20px}
+.stage-heading{margin-bottom:18px}
+.stage-visual{margin:0;display:flex;flex:1;min-height:0;flex-direction:column;gap:12px}
+.stage-visual img{display:block;width:100%;aspect-ratio:4/3;object-fit:contain;border:1px solid color-mix(in srgb,var(--line) 78%,transparent);border-radius:12px;background:#f8fbff}
+.stage-visual figcaption{min-height:36px;color:var(--muted);font:650 10px/1.55 ui-monospace,monospace}
+.map-stage>code{position:static;display:block;margin-top:auto;padding-top:17px;border-top:1px solid var(--line);font-size:9px;line-height:1.55;white-space:normal}
+:root[data-theme="dark"] .stage-visual img{filter:brightness(.82) saturate(.9);border-color:#355070}
 
 .summary-strip { display:grid; grid-template-columns:auto 1fr; gap:30px; max-width:1220px; margin:72px auto; padding:34px 40px; border:1px solid var(--line); border-radius:18px; background:var(--surface); box-shadow:var(--shadow); }
 .summary-number { display:grid; place-items:center; width:54px; height:54px; border-radius:14px; background:var(--blue-soft); color:var(--blue); font:750 14px ui-monospace,monospace; }
@@ -178,9 +199,9 @@ footer a{color:var(--blue)}
 }
 @media (max-width: 760px){
   .site-header{height:64px;grid-template-columns:1fr auto;padding:0 16px}.brand{font-size:13px}.header-nav{display:none}
-  .hero{min-height:auto;padding:62px 18px 40px;gap:50px}.hero h1{font-size:clamp(45px,15vw,68px)}.hero-subtitle{font-size:18px}
-  .system-map{grid-template-columns:1fr;min-height:0}.map-stage{min-height:390px;border-right:0;border-bottom:1px dashed var(--line);padding:24px 28px}.map-stage:last-child{border-bottom:0}
-  .harness-shell{max-width:280px;margin:auto}.loop-ring{width:230px;height:230px}.graph-net{width:260px}
+  .hero{min-height:auto;padding:62px 18px 40px;gap:50px}.hero h1{font-size:clamp(42px,12vw,60px)}.hero-subtitle{font-size:18px}
+  .system-map{grid-template-columns:1fr;min-height:0}.map-stage{min-height:0;border-right:0;border-bottom:1px dashed var(--line);padding:24px 24px 22px}.map-stage:last-child{border-bottom:0}
+  .stage-visual img{max-height:370px}.stage-visual figcaption{min-height:0;font-size:10px}.map-stage>code{margin-top:18px}
   .summary-strip{margin:42px 16px;padding:25px 22px;grid-template-columns:1fr}.summary-number{width:42px;height:42px}.summary-text{font-size:19px}
   .reading-layout{display:block;padding:20px 19px 90px}.toc{position:static;max-height:none;margin-bottom:70px;padding:0}.toc ol{display:grid;grid-template-columns:repeat(2,1fr);gap:4px;border:0}.toc li a{padding:9px;border-bottom:1px solid var(--line)}
   .report-section{margin-bottom:85px}.report-section>h2{font-size:36px}.section-lead{font-size:18px}.prose{font-size:16px;line-height:1.85}.prose h3{font-size:22px;margin-top:44px}.prose blockquote{font-size:19px;padding:24px}
@@ -194,12 +215,12 @@ footer a{color:var(--blue)}
 </style>
 </head>
 <body>
-<main>
+<main lang="en">
   <header class="site-header"><a class="brand" href="#top"><span class="brand-mark"></span>AGENT ENGINEERING</a><nav class="header-nav" aria-label="Primary sections"><a href="#concepts">Concepts</a><a href="#comparison">Comparison</a><a href="#roadmap">Roadmap</a></nav><div class="header-actions"><a class="language-link" href="index.html">KO</a><button class="icon-button" id="theme-toggle" type="button" aria-label="Toggle light and dark appearance">◐</button></div></header>
   <div id="top" class="hero blueprint"><section class="hero-copy"><p class="eyebrow">AGENT SYSTEMS FIELD GUIDE · 2026</p><h1>The Next Stage of Agent Engineering</h1><p class="hero-subtitle">From harness engineering to loop engineering and graph engineering</p><div class="read-meta"><span class="clock">◷</span><span>24 min read</span><span>·</span><span>ENGLISH EDITION</span></div></section><section class="system-map" aria-label="Relationship between harness, loop, and graph engineering">
-    <article class="map-stage harness-stage"><div class="stage-heading"><span>01</span><h2>HARNESS</h2></div><div class="harness-shell"><div class="input-lines"><span>CONTEXT</span><i></i><span>TOOLS</span><i></i><span>RULES</span><i></i></div><div class="model-core">MODEL<br>CORE</div><ul><li>constraints</li><li>tools</li><li>observability</li></ul></div><code>environment = constraints + tools + feedback</code></article>
-    <article class="map-stage loop-stage"><div class="stage-heading"><span>02</span><h2>LOOP</h2></div><div class="loop-ring"><span class="loop-node node-one">1<small>PLAN</small></span><span class="loop-node node-two">2<small>ACT</small></span><span class="loop-node node-three">3<small>VERIFY</small></span><span class="loop-node node-four">4<small>REFLECT</small></span><div class="model-core">MODEL<br>CORE</div></div><code>while (!done) plan → act → verify</code></article>
-    <article class="map-stage graph-stage"><div class="stage-heading"><span>03</span><h2>GRAPH</h2></div><div class="graph-net"><span class="graph-node graph-top">LOOP</span><span class="graph-node graph-left">AGENT</span><span class="graph-node graph-right">CODE</span><span class="graph-node graph-bottom">HUMAN</span><i class="edge edge-a"></i><i class="edge edge-b"></i><i class="edge edge-c"></i><i class="edge edge-d"></i></div><code>nodes + edges + state + policy</code></article>
+    <article class="map-stage harness-stage"><div class="stage-heading"><span>01</span><h2>HARNESS</h2></div><figure class="stage-visual"><img src="visuals/harness.webp" alt="A harness surrounding a model core with context, tools, rules, memory, permissions, and verification" width="1200" height="900"><figcaption>Environment · context · tools · permissions · verification</figcaption></figure><code>environment = constraints + tools + feedback</code></article>
+    <article class="map-stage loop-stage"><div class="stage-heading"><span>02</span><h2>LOOP</h2></div><figure class="stage-visual"><img src="visuals/loop.webp" alt="A loop of planning, action, verification, and reflection around a model core" width="1200" height="900"><figcaption>Goal · action · evidence · retry · termination</figcaption></figure><code>while (!done) plan → act → verify</code></article>
+    <article class="map-stage graph-stage"><div class="stage-heading"><span>03</span><h2>GRAPH</h2></div><figure class="stage-visual"><img src="visuals/graph.webp" alt="A graph connecting agents, loops, deterministic code, and human approval through shared state" width="1200" height="900"><figcaption>Branch · parallelize · join · approve · recover</figcaption></figure><code>nodes + edges + state + policy</code></article>
   </section></div>
   <section class="summary-strip"><span class="summary-number">00</span><div><p class="eyebrow">EXECUTIVE SUMMARY</p><p class="summary-text">Models act inside a harness, loops repeat that action over time, and graphs structure the relationships among loops, people, and deterministic code. Autonomy is constrained more directly by verifiability than by model intelligence.</p></div></section>
   <div class="reading-layout"><aside class="toc"><p class="eyebrow">CONTENTS 01—16</p><ol><li><a href="#concepts"><span>01</span>Three boundaries</a></li><li><a href="#evolution"><span>02</span>Evolution</a></li><li><a href="#speakers"><span>03</span>Key perspectives</a></li><li><a href="#loops"><span>04</span>Inner & outer loops</a></li><li><a href="#model-fit"><span>05</span>Model × harness</a></li><li><a href="#codex"><span>06</span>Codex</a></li><li><a href="#claude-code"><span>07</span>Claude Code</a></li><li><a href="#hermes"><span>08</span>Hermes</a></li><li><a href="#comparison"><span>09</span>Fit before tools</a></li><li><a href="#choice"><span>10</span>Choose structure</a></li><li><a href="#users"><span>11</span>Guidance by user</a></li><li><a href="#principles"><span>12</span>Design principles</a></li><li><a href="#antipatterns"><span>13</span>Anti-patterns</a></li><li><a href="#roadmap"><span>14</span>Maturity roadmap</a></li><li><a href="#direction"><span>15</span>Outlook</a></li><li><a href="#conclusion"><span>16</span>Conclusion</a></li></ol></aside><article class="report"><section id="concepts" class="report-section">
